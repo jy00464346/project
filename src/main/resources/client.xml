@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <dubbo:application name="front-consumer"/>
+    <dubbo:consumer check="false" timeout="30000"/>
+    <!--<dubbo:registry address="multicast://224.5.6.7:1234"/>-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <dubbo:service interface="com.muzy.test.User" ref="user" export="true"/>
+
+    <dubbo:service interface="com.muzy.test.Person" ref="person" export="true"/>
+
+    <bean id="person" class="com.muzy.test.PersonImpl"/>
+
+    <bean id="user" class="com.muzy.test.UserImpl">
+        <property name="p" ref="personReq"/>
+    </bean>
+
+    <dubbo:reference id="userReq" interface="com.muzy.test.User" injvm="false">
+        <dubbo:method name="test" async="true" />
+    </dubbo:reference>
+    <dubbo:reference id="personReq" interface="com.muzy.test.Person" injvm="false"/>
+
+</beans>
